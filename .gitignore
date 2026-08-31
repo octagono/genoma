@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env / secrets
+.env
+
+# Data (gated dataset — never commit; root-only, NOT src/mva_agent/data/)
+/data/
+*.vcf.gz
+*.fastq.gz
+
+# Outputs
+submissions/*.csv
+optimized_program/
+
+# Local VEP annotation (GRCh38 cache + podman scripts — large, mutable; keep the .sh)
+/vep_data/*
+!/vep_data/*.sh
+
+# Legacy path: the VEP cache download started before the restructure still
+# writes here. Never commit; moved to /vep_data/ after the download finishes.
+/mva-agent/vep_data/
+/mva-hackathon-2026/
+submissions/*.jsonl
+
+# Pitch script (internal prep material — the deliverable is the video URL)
+docs/PITCH_SCRIPT.md
+
+# Derived outputs (submission rows + planner state = derived genome data)
+submissions/*.md
+submission/
+
+# Local browser-automation session artifacts (Playwright MCP)
+.playwright-mcp/

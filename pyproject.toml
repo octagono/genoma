@@ -1,0 +1,61 @@
+[project]
+name = "genoma"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "octagono", email = "octagono@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "cyvcf2>=0.31.2",
+    "dspy[anthropic,deno,mcp]==3.3.1",
+    "huggingface-hub>=1.29.0",
+    "pydantic>=2.13.4",
+    "python-docx>=1.1.2",
+    "python-dotenv>=1.2.3",
+]
+
+[project.scripts]
+genoma = "genoma:main"
+genoma-mcp = "genoma.mcp_server:main"
+
+[project.optional-dependencies]
+mcp-server = ["mcp>=1.0"]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+src = ["src"]
+# The organizers' Space clone lives on disk for the official-scorer parity
+# tests but is NOT part of this repo — exclude it from linting.
+extend-exclude = ["mva-hackathon-2026"]
+
+[tool.ruff.lint]
+# Broad, opinionated rule set: pycodestyle (E/W), pyflakes (F), isort (I),
+# bugbear (B), comprehensions (C4), pyupgrade (UP), simplify (SIM), flake8-
+# blind-except (BLE), flake8-async (ASYNC), sys-version (YTT), flake8-bandit (S).
+select = [
+    "E", "W", "F", "I", "B", "C4", "UP", "SIM", "BLE001", "ASYNC", "YTT", "S110", "S112",
+]
+ignore = [
+    "E501",  # line length handled by the formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests may use bare asserts for fixtures and broad setups.
+"tests/**" = ["BLE001", "S110", "SIM102"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

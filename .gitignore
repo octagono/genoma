@@ -35,5 +35,9 @@ docs/PITCH_SCRIPT.md
 submissions/*.md
 submission/
 
+# Post-hackathon retention set (gene-level findings only; survives purge-cache,
+# stays local — must never be published with the code)
+/keep/
+
 # Local browser-automation session artifacts (Playwright MCP)
 .playwright-mcp/

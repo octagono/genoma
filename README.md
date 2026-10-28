@@ -1,11 +1,55 @@
 # Genoma — Rare-Disease Variant-Prioritization Pipeline
 
 **MVA Hackathon 2026** (Rare Disease, Real Kid) — Track 1 (variant prediction) +
-Track 2 (drug repurposing) DSPy pipeline. **dspy==3.3.1** (pinned).
+Track 2 (drug repurposing), built on **dspy==3.3.1** (pinned).
+
+## Result
+
+| Metric | Value |
+|---|---|
+| Track 1 rank points | **100.0 / 100** (the ceiling) |
+| F-max | **1.000** |
+| Causal variant pair | recovered at **rank 1**, compound-het encoded as a single row |
+| Leaderboard | **rank 66 of 230 teams**, one of 220 at the 100-point ceiling (frozen 2026-10-24) |
+| Best submission | `model1_octagono_genoma-panel.csv` — 10 rows, 2026-08-31 |
+| Cost / runtime | ≈**$40** and ≈1–3 h wall clock, including the one-time local VEP annotation |
+
+Ordering inside the 220-team ceiling group is submission time, not quality —
+a strict chronological ranking, not a merit ranking.
+
+Both submitted reports (Track 1 methods write-up, Track 2 drug-repurposing +
+methods reports) and the 3-minute pitch live in the organizers' submission
+record and are not duplicated here: they discuss gated, individual-level data,
+which this repository deliberately excludes (see **Compliance**).
+
+## Reproduce
+
+```bash
+uv sync && cp .env.example .env   # add HF_TOKEN (+ model keys for real runs)
+./run.sh demo                     # offline, no keys: rank_points 100.0, f_max 1.0
+./run.sh ingest && ./run.sh panel # real run: gated dataset download → ranked CSV
+```
+
+`./run.sh demo` proves the scoring/calibration path end-to-end with `DummyLM` in
+about 5 seconds. The real path needs gated-dataset terms accepted on Hugging
+Face; the full turnkey sequence (ingest → HPO review → candidate pool →
+panel → submission → purge) is `docs/LIVE_RUNBOOK.md`.
+
+## What it does
 
 A deterministic-first, LLM-ranked framework for single-proband rare-disease
-diagnosis — disease-agnostic architecture (adapting to another unsolved case
-is a config change: known-gene set, HPO synonyms, mechanism description).
+diagnosis. A genome-wide VCF is annotated once (VEP), pre-filtered by
+quality/allele-frequency into a bounded candidate pool, enriched with deep
+predictors (gnomAD, CADD, REVEL, AlphaMissense, SpliceAI), then scored for
+causality by a **heterogeneous model panel** whose disagreements trigger debate
+and, failing that, abstention. Compound-het pairs are phased (VCF tags, trio
+Mendelian, or WhatsHap) and encoded as single rows because the official scorer
+requires it. A final calibration step guarantees a strictly unique rank-1,
+since a tie at the top halves F-max.
+
+Disease-agnostic by construction: adapting to another unsolved case is a config
+change — known-gene set, HPO synonyms, mechanism description — not a code
+change.
 
 ## Setup
 
@@ -200,7 +244,7 @@ rank-1 compound-het pair and penalizes ties:
 - **Lint + format** — `ruff check .` clean and `ruff format --check
   src tests` formatted (ruff is a declared dev
   dependency; config under `[tool.ruff]` in pyproject.toml).
-- **Tests** — `uv run pytest tests/ -q` (134 offline tests) before every
+- **Tests** — `uv run pytest tests/ -q` (**138 offline tests**) before every
   submission.
 - **Automated provenance** — the submission CSV is produced end-to-end by
   the pipeline (pre-filter → VEP enrichment → scoring → calibration). No
@@ -267,14 +311,21 @@ hill-climb rules for exploiting full/partial-match feedback.
 
 ## Compliance
 
-Submissions close **2026-10-24 23:59 UTC**; all data must be deleted within
-**30 days of close** (email confirmation to the address in `config.py`).
-`./run.sh purge-cache` clears all three genome-carrying caches: the DSPy
-disk cache (`~/.dspy_cache`, stores LM responses verbatim), the gated
-dataset dir (`data/`, including the `data/.cache/huggingface` download
-blobs `hf_hub_download` leaves behind), and this dataset's entry in the
-HF hub cache. `--keep-data` skips the dataset; `--keep-disk` skips the
-DSPy cache. Relocate the DSPy cache via `DSPY_CACHEDIR` in `.env`.
+Submissions closed **2026-10-24 23:59 UTC**; all data had to be deleted within
+**30 days of close** (by **2026-11-23**), confirmed by email to
+`cnb@sagebase.org` per §6 of the rules. **This has been done:** the gated
+dataset, its VEP-annotated derivatives, the annotation cache, the Hugging Face
+download blobs, the DSPy LM disk cache and every derived submission artifact
+(CSVs, scoring checkpoints, the report version carrying the ranked variant
+table) were purged on 2026-10-28.
+
+`./run.sh purge-cache` remains the reproducible instrument: it clears the DSPy
+disk cache (`~/.dspy_cache`, stores LM responses verbatim), the dataset dir
+(`data/`, including the `data/.cache/huggingface` blobs `hf_hub_download`
+leaves behind), and this dataset's HF hub-cache entry — plus `submissions/`,
+whose ranked variant calls are derived genome data under the rules.
+`--keep-data` skips the dataset; `--keep-disk` skips the DSPy cache. Relocate
+the DSPy cache via `DSPY_CACHEDIR` in `.env`.
 
 ## License
 

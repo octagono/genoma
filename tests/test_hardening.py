@@ -1208,7 +1208,7 @@ def test_pool_selection_is_genome_aware_not_vcf_order():
     ] + [
         {
             "chrom": "chr15",
-            "pos": 40209701,
+            "pos": 90000001,
             "ref": "T",
             "alt": "G",
             "qual": 700,
@@ -1220,7 +1220,7 @@ def test_pool_selection_is_genome_aware_not_vcf_order():
         },
         {
             "chrom": "chr15",
-            "pos": 40220612,
+            "pos": 90010012,
             "ref": "T",
             "alt": "G",
             "qual": 344,
@@ -1233,6 +1233,6 @@ def test_pool_selection_is_genome_aware_not_vcf_order():
     ]
     cands = build_candidate_table(records, max_candidates=5)
     coords = {c.coord for c in cands}
-    assert "chr15:40209701:T>G" in coords, "known-gene LOF must survive the cap"
-    assert "chr15:40220612:T>G" in coords, "known-gene missense must survive the cap"
+    assert "chr15:90000001:T>G" in coords, "known-gene LOF must survive the cap"
+    assert "chr15:90010012:T>G" in coords, "known-gene missense must survive the cap"
     assert cands[0].gene == "BUB1B"  # causal pair ranks above chr1 noise

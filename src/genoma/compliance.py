@@ -129,13 +129,15 @@ def deletion_checklist() -> str:
     now = datetime.now(UTC)
     close = datetime.fromisoformat(cfg.HACKATHON_CLOSE_ISO.replace("Z", "+00:00"))
     days_left = (close - now).days
+    close_state = f"{days_left} days left" if days_left > 0 else f"closed {abs(days_left)} days ago"
     deadline = close.timestamp() + cfg.DATA_DELETE_DAYS * 86400
     deadline_dt = datetime.fromtimestamp(deadline, tz=UTC)
+    days_to_deletion = (deadline_dt - now).days
     return f"""\
 MVA Hackathon — Data Deletion Checklist
 =======================================
-Submissions close: {close:%Y-%m-%d %H:%M UTC} ({days_left} days left)
-All data must be deleted by: {deadline_dt:%Y-%m-%d} (close + {cfg.DATA_DELETE_DAYS} days)
+Submissions close: {close:%Y-%m-%d %H:%M UTC} ({close_state})
+All data must be deleted by: {deadline_dt:%Y-%m-%d} (close + {cfg.DATA_DELETE_DAYS} days; {days_to_deletion} days remaining)
 Confirm deletion by emailing: {cfg.DATA_DELETE_EMAIL}
 
 Submission quotas (track before each submit):

@@ -135,5 +135,9 @@ TRACK2_SUBMISSIONS = 3  # the expert panel reviews only the LATEST submission
 
 # ── Compliance ─────────────────────────────────────────────────────────────
 HACKATHON_CLOSE_ISO = "2026-10-24T23:59:00Z"  # submissions close (frozen leaderboard)
-DATA_DELETE_EMAIL = "RarediseaserealkidMVAhackathon2026@synapse.org"
+# Confirmation address per the live rules tab (Space commit 2026-10-13 "update
+# email for data deletion confirmation"); supersedes the earlier synapse.org
+# address. Source: huggingface.co/spaces/SageBio/rare-disease-real-kid-mva-hackathon-2026
+# → tabs/rules.py, "All participants must email … to confirm data has been deleted."
+DATA_DELETE_EMAIL = "cnb@sagebase.org"
 DATA_DELETE_DAYS = 30

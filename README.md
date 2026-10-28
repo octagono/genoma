@@ -275,3 +275,12 @@ dataset dir (`data/`, including the `data/.cache/huggingface` download
 blobs `hf_hub_download` leaves behind), and this dataset's entry in the
 HF hub cache. `--keep-data` skips the dataset; `--keep-disk` skips the
 DSPy cache. Relocate the DSPy cache via `DSPY_CACHEDIR` in `.env`.
+
+## License
+
+Code and documentation are released under **CC BY 4.0** (see `LICENSE`,
+full legal code, and `NOTICE` for the required acknowledgement), matching the
+hackathon rule that submissions are released under a CC-BY license. This
+repository contains **no patient data**: the gated dataset and every
+genotype-scale derivative are gitignored and destroyed under the 30-day
+deletion rule.
